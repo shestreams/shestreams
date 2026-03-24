@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SheStreams — The Media Session</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ee;
+    --teal: #00d4c8;
+    --pink: #e8547a;
+    --gray: #7a7a7a;
+    --gray-light: #d6d2cd;
+    --matte: #1a1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .she-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .she-logo .she { color: var(--white); }
+  .she-logo .streams { color: var(--teal); }
+  .she-logo .cam {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 17px;
+    background: linear-gradient(135deg, var(--teal), #7b4fff);
+    border-radius: 3px;
+    margin-left: 5px;
+    font-size: 8px;
+    color: white;
+  }
+
+  /* HEADER */
+  header {
+    padding: 64px 52px 48px;
+    border-bottom: 1px solid #1a1a1a;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), #7b4fff);
+  }
+
+  header::after {
+    content: 'STREAMS';
+    position: absolute;
+    right: -10px;
+    bottom: -30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 150px;
+    color: #111;
+    letter-spacing: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
+  }
+
+  .brand-tag { margin-bottom: 20px; }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 68px);
+    font-weight: 400;
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+
+  h1 span { font-style: italic; color: var(--teal); }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--gray);
+    max-width: 520px;
+    line-height: 1.8;
+  }
+
+  .price-hero {
+    text-align: right;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .price-label { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+  .price-amount { font-family: 'Bebas Neue', sans-serif; font-size: 80px; color: var(--teal); line-height: 1; letter-spacing: 2px; }
+  .price-per { font-size: 12px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+  /* SECTIONS */
+  section { padding: 56px 52px; border-bottom: 1px solid #1a1a1a; }
+
+  .section-label { font-size: 9px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+
+  h2 { font-family: 'DM Serif Display', serif; font-size: clamp(22px, 3vw, 34px); font-weight: 400; margin-bottom: 8px; line-height: 1.15; }
+  h2 em { font-style: italic; color: var(--teal); }
+
+  .section-intro { font-size: 14px; color: var(--gray); margin-bottom: 36px; max-width: 580px; line-height: 1.8; }
+
+  /* FOR YOU BLOCK */
+  .for-you {
+    background: linear-gradient(135deg, #001a19, #0a0a0a);
+    border-left: 3px solid var(--teal);
+    padding: 48px 52px;
+  }
+
+  .for-you p {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(20px, 2.5vw, 30px);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--white);
+    max-width: 680px;
+  }
+
+  .for-you p em { font-style: normal; color: var(--teal); }
+
+  /* WHO GRID */
+  .who-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+    background: #1a1a1a;
+  }
+
+  .who-card {
+    background: #0d0d0d;
+    padding: 32px;
+  }
+
+  .who-card.featured {
+    background: #001a19;
+    border-top: 2px solid var(--teal);
+  }
+
+  .who-eyebrow {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+
+  .who-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 19px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .who-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* SESSION STRUCTURE */
+  .structure {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: #1a1a1a;
+  }
+
+  .structure-block {
+    background: #0d0d0d;
+    padding: 32px;
+  }
+
+  .structure-block.accent {
+    background: #001a19;
+    border-top: 2px solid var(--teal);
+  }
+
+  .structure-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .structure-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); margin-bottom: 10px; }
+  .structure-title { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+  .structure-desc { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+  /* WHAT THEY BRING */
+  .bring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    background: #1a1a1a;
+  }
+
+  .bring-card { background: #111; padding: 24px 28px; border-left: 2px solid var(--teal); }
+  .bring-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+  .bring-text { font-size: 13px; color: var(--gray-light); line-height: 1.6; }
+
+  /* STEPS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2px;
+    background: #1a1a1a;
+  }
+
+  .step { background: #0d0d0d; padding: 32px; }
+  .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: #1a1a1a; line-height: 1; margin-bottom: 8px; }
+  .step-title { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 400; margin-bottom: 8px; }
+  .step-desc { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+  /* OFFER BLOCK */
+  .offer-block {
+    background: #001a19;
+    border: 1px solid var(--teal);
+    padding: 52px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .offer-name { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+
+  .offer-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 2.5vw, 34px);
+    font-weight: 400;
+    margin-bottom: 20px;
+    line-height: 1.15;
+  }
+
+  .offer-title em { font-style: italic; color: var(--teal); }
+
+  .offer-includes { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .offer-includes li {
+    font-size: 13px;
+    color: var(--gray-light);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+
+  .offer-includes li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-size: 11px; }
+
+  .offer-right { text-align: center; flex-shrink: 0; }
+  .offer-price { font-family: 'Bebas Neue', sans-serif; font-size: 96px; color: var(--teal); line-height: 1; letter-spacing: 2px; }
+  .offer-per { font-size: 12px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px; }
+
+  .offer-cta {
+    display: block;
+    padding: 16px 32px;
+    background: var(--teal);
+    color: var(--black);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  /* CREDENTIALS */
+  .cred-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    background: #1a1a1a;
+  }
+
+  .cred-item { background: #0d0d0d; padding: 20px 28px; flex: 1; min-width: 180px; }
+  .cred-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+  .cred-value { font-size: 13px; color: var(--gray-light); line-height: 1.4; }
+
+  /* CLOSING CTA */
+  .closing {
+    background: var(--teal);
+    padding: 56px 52px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .closing-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(24px, 3.5vw, 44px);
+    font-weight: 400;
+    color: var(--black);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .closing-sub {
+    font-size: 14px;
+    color: rgba(0,0,0,0.6);
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  .closing-details { text-align: right; flex-shrink: 0; }
+  .closing-detail { font-size: 12px; color: rgba(0,0,0,0.6); margin-bottom: 8px; }
+  .closing-detail strong { color: var(--black); font-weight: 600; }
+
+  .closing-cta {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 16px 36px;
+    background: var(--black);
+    color: var(--white);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+  }
+
+  footer {
+    padding: 24px 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-note { font-size: 11px; color: #2a2a2a; letter-spacing: 1px; }
+
+  @media (max-width: 640px) {
+    header, section, .closing, .offer-block, .for-you { padding: 36px 24px; }
+    .header-inner, .closing, .offer-block { grid-template-columns: 1fr; }
+    .price-hero, .closing-details, .offer-right { text-align: left; }
+    .structure { grid-template-columns: 1fr; }
+    footer { padding: 24px; flex-direction: column; }
+    header::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="brand-tag">
+        <div class="she-logo"><span class="she">SHE</span><span class="streams">STREAMS</span><span class="cam">▶</span></div>
+      </div>
+      <h1>The media session<br><span>you didn't know you could book.</span></h1>
+      <p class="header-sub">A virtual 1:1 session with someone who has spent over a decade behind cameras — looking at your specific setup, understanding your goals, and giving you a plan built entirely around you. Not a course. Not a template. A real conversation that goes somewhere.</p>
+    </div>
+    <div class="price-hero">
+      <div class="price-label">Investment</div>
+      <div class="price-amount">$200</div>
+      <div class="price-per">75 min · Virtual · Zoom</div>
+    </div>
+  </div>
+</header>
+
+<!-- FOR YOU -->
+<div class="for-you">
+  <p>You know what you want to create. You know who you want to reach. You just want someone who actually knows what they're doing to <em>look at your setup, understand your goals,</em> and tell you exactly what to do next — based on where you actually are.</p>
+</div>
+
+<!-- WHO IT'S FOR -->
+<section>
+  <div class="section-label">Who This Is For</div>
+  <h2>You're Already <em>Building Something Real</em></h2>
+  <p class="section-intro">This session is for the creator who is ready — not the one who has it all figured out, but the one who is committed to showing up and wants the right support to do it well.</p>
+
+  <div class="who-grid">
+    <div class="who-card featured">
+      <div class="who-eyebrow">The Podcaster</div>
+      <div class="who-title">You have a voice and something worth saying</div>
+      <div class="who-desc">You want your recording to sound and look as good as the message you're delivering. Let's get your setup where it needs to be.</div>
+    </div>
+    <div class="who-card featured">
+      <div class="who-eyebrow">The YouTuber</div>
+      <div class="who-title">You're ready to build your channel consistently</div>
+      <div class="who-desc">You want a workflow that's sustainable — good quality, right setup, and a system that lets you show up without starting from scratch every time.</div>
+    </div>
+    <div class="who-card featured">
+      <div class="who-eyebrow">The Live Streamer</div>
+      <div class="who-title">You want to go live with confidence</div>
+      <div class="who-desc">You're ready to show up in real time and connect with your audience — you just want the technical side handled so you can focus on being present.</div>
+    </div>
+    <div class="who-card featured">
+      <div class="who-eyebrow">The Church Media Team</div>
+      <div class="who-title">You want your production to honor what you're streaming</div>
+      <div class="who-desc">The message is important. The production should reflect that. Whether you're a team or a one-person operation — this session helps you get there.</div>
+    </div>
+    <div class="who-card featured">
+      <div class="who-eyebrow">The Personal Brand Builder</div>
+      <div class="who-title">You're ready to show up on video consistently</div>
+      <div class="who-desc">You have a brand, a message, and an audience to build. You want a media workflow that supports all of it without overwhelming you.</div>
+    </div>
+    <div class="who-card featured">
+      <div class="who-eyebrow">The Webinar Host</div>
+      <div class="who-title">You want your virtual events to run smoothly</div>
+      <div class="who-desc">You host online events and want them to feel professional, polished, and well-produced — from the stream to the lower thirds to the follow-up content.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIES — moved up -->
+<section>
+  <div class="section-label">Real People. Real Results.</div>
+  <h2>What Clients <em>Actually Say</em></h2>
+  <p class="section-intro">From church media teams to individual creators — here's what working with Tiauna looks like.</p>
+
+  <div style="display: flex; flex-direction: column; gap: 2px;">
+    <div style="background: #001a19; border-left: 3px solid var(--teal); padding: 36px 40px;">
+      <div style="font-family: 'DM Serif Display', serif; font-size: clamp(15px, 1.8vw, 19px); font-style: italic; line-height: 1.7; color: var(--white); margin-bottom: 20px;">"SheStreams Media is comprised of a team of talented and knowledgeable experts. Jasmine Hall does an exceptional job providing information, tools, and resources to vastly improve your media department. She is very passionate and truly enjoys her work. I highly recommend SheStreams Media to anyone looking to improve their media ministry."</div>
+      <div style="font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal);">Verified Client · Church Media Ministry</div>
+    </div>
+    <div style="background: #0d0d0d; border-left: 3px solid var(--teal); padding: 36px 40px;">
+      <div style="font-family: 'DM Serif Display', serif; font-size: clamp(15px, 1.8vw, 19px); font-style: italic; line-height: 1.7; color: var(--white); margin-bottom: 20px;">"Tiauna is persistent and always makes sure her client gets all the knowledge they need and that they are comfortable — and she makes sure the client's audience is good as well. I really enjoyed working with her and I would recommend her to anyone that's ready to hit the ground running."</div>
+      <div style="font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal);">Verified Client · Content Creator</div>
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 40px 0 8px;">
+    <a href="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" style="display:inline-block; padding: 16px 40px; background: var(--teal); color: var(--black); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; font-family: 'DM Sans', sans-serif; text-decoration: none;">Book Your Session — $200 →</a>
+  </div>
+</section>
+
+<!-- SESSION STRUCTURE -->
+<section>
+  <div class="section-label">How the Session Works</div>
+  <h2>Built Around You. <em>Not a Template.</em></h2>
+  <p class="section-intro">Every session follows the same structure — but every plan is completely different. Because your goals, your setup, and your budget are yours. This is a real conversation that leads somewhere specific.</p>
+
+  <div class="structure">
+    <div class="structure-block accent">
+      <div class="structure-time">15<span style="font-size:22px;"> min</span></div>
+      <div class="structure-label">Phase 1 · Assessment</div>
+      <div class="structure-title">We start with you</div>
+      <div class="structure-desc">We talk about what you have, where you want to go, what you're creating, what makes you comfortable, and what your budget looks like. Everything that comes next is built on this conversation — not a generic checklist.</div>
+    </div>
+    <div class="structure-block accent">
+      <div class="structure-time">45<span style="font-size:22px;"> min</span></div>
+      <div class="structure-label">Phase 2 · Solutions</div>
+      <div class="structure-title">Specific to you</div>
+      <div class="structure-desc">Based on what you've shared, you receive actionable solutions — built around your actual gear, your real goals, your platforms, and your budget. Nothing out of reach. Nothing generic.</div>
+    </div>
+    <div class="structure-block accent">
+      <div class="structure-time">15<span style="font-size:22px;"> min</span></div>
+      <div class="structure-label">Phase 3 · Your Questions</div>
+      <div class="structure-title">Ask anything</div>
+      <div class="structure-desc">The last 15 minutes are yours. Ask whatever came up. Clarify anything. You leave with nothing unanswered — and a written action plan in your inbox within 24 hours.</div>
+    </div>
+  </div>
+</section>
+
+<!-- INLINE CTA 1 -->
+<div style="background: var(--teal); padding: 32px 52px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+  <div style="font-family: 'DM Serif Display', serif; font-size: clamp(18px, 2vw, 26px); font-weight: 400; color: var(--black); font-style: italic;">75 minutes. A plan built entirely around you.</div>
+  <a href="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" style="display:inline-block; padding: 14px 32px; background: var(--black); color: var(--white); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; font-family: 'DM Sans', sans-serif; text-decoration: none; white-space: nowrap;">Book Now — $200 →</a>
+</div>
+
+<!-- PROBLEMS SOLVED -->
+<section>
+  <div class="section-label">What Gets Addressed</div>
+  <h2><em>Sound like you?</em></h2>
+  <p class="section-intro">These are the kinds of things we work through together — and you leave with actual answers.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2px; background: #1a1a1a;">
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want to know exactly what camera or gear to get for where I am right now."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want to understand why my video or audio quality isn't where I want it to be."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want to set up a live stream that actually looks and runs the way I envision."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want our church stream to reflect the quality of what we're doing in that room."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want a repurposing system so one recording does the work of many."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want to know how to actually use the gear I already have more effectively."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want my webinars to run smoothly and feel professional from start to finish."</div>
+    </div>
+    <div style="background: #111; padding: 22px 28px; border-left: 2px solid var(--teal);">
+      <div style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px;">Addressed</div>
+      <div style="font-size: 13px; color: var(--gray-light); line-height: 1.5; font-style: italic;">"I want to feel more confident and comfortable showing up on camera consistently."</div>
+    </div>
+  </div>
+</section>
+
+<!-- INLINE CTA 2 -->
+<div style="background: #111; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; padding: 32px 52px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+  <div style="font-family: 'DM Serif Display', serif; font-size: clamp(16px, 1.8vw, 22px); font-weight: 400; color: var(--white);">Ready to get answers? Book your session today.</div>
+  <a href="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" style="display:inline-block; padding: 14px 32px; background: var(--teal); color: var(--black); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; font-family: 'DM Sans', sans-serif; text-decoration: none; white-space: nowrap;">Book Now — $200 →</a>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-label">The Process</div>
+  <h2>Four Steps. <em>Then You Have a Plan.</em></h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Book & pay</div>
+      <div class="step-desc">Book via Setmore. Pay via Stripe. $200 confirms your spot. You'll receive a Google Meet link and a short intake form within 24 hours.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Complete your intake form</div>
+      <div class="step-desc">A few short questions before the session so we hit the ground running. No time wasted — we start working from minute one.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Show up & talk</div>
+      <div class="step-desc">Join Google Meet with your gear visible if possible. 75 minutes — assessment, solutions, questions. Done on time, every time.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Receive your action plan</div>
+      <div class="step-desc">Within 24 hours a written plan lands in your inbox — organized, specific, and ready to implement. A reference you can return to anytime.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THE OFFER -->
+<div class="offer-block">
+  <div>
+    <div class="offer-name">The SheStreams Media Session</div>
+    <div class="offer-title">One session. A plan that's<br><em>completely yours.</em></div>
+    <ul class="offer-includes">
+      <li>75-minute virtual session via Zoom</li>
+      <li>15-min assessment — your gear, goals, message, comfort, budget, and platforms</li>
+      <li>45-min solutions — specific to you, within your real budget</li>
+      <li>15-min Q&A — your questions answered before you leave</li>
+      <li>Pre-session intake form so every minute counts</li>
+      <li>Written action plan emailed within 24 hours</li>
+      <li>Recommendations built around what you can actually do right now</li>
+      <li>10+ years of broadcast-trained expertise behind every suggestion</li>
+    </ul>
+  </div>
+  <div class="offer-right">
+    <div class="offer-price">$200</div>
+    <div class="offer-per">75 min · Virtual · Zoom</div>
+    <a href="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" class="offer-cta">Book Your Session →</a>
+  </div>
+</div>
+
+<!-- CREDENTIALS — BRIEF -->
+<section>
+  <div class="section-label">Who You're Working With</div>
+  <h2>Experience That <em>Shows Up for You</em></h2>
+  <p class="section-intro">Tiauna Jasmine has spent over a decade in media — not studying it, doing it. From broadcast television to church media to content creation. She has been in the room, behind the camera, managing the stream, and troubleshooting in real time. She brings all of that into every session.</p>
+
+  <div class="cred-strip">
+    <div class="cred-item">
+      <div class="cred-label">Started</div>
+      <div class="cred-value">Media volunteer at 17 in her home church · 2010</div>
+    </div>
+    <div class="cred-item">
+      <div class="cred-label">Trained</div>
+      <div class="cred-value">Formally trained by a media specialist · 2015</div>
+    </div>
+    <div class="cred-item">
+      <div class="cred-label">Broadcast</div>
+      <div class="cred-value">Camera intern — Star (Fox TV) · Broadcast Ops — The Weather Channel · 2018</div>
+    </div>
+    <div class="cred-item">
+      <div class="cred-label">Education</div>
+      <div class="cred-value">B.S. Communication Media Studies · Clayton State University · 2018</div>
+    </div>
+    <div class="cred-item">
+      <div class="cred-label">Director</div>
+      <div class="cred-value">Church Media Director since 2020 · A dozen churches served</div>
+    </div>
+    <div class="cred-item">
+      <div class="cred-label">Production</div>
+      <div class="cred-value">Events · Conferences · Webinars — produced nationally</div>
+    </div>
+  </div>
+</section>
+
+<!-- SETMORE BOOKING WIDGET -->
+<script id="anywhere_book_now_script" src="https://assets.setmore.com/integration/book-now/live/v1/anywhere-book-now.js"></script>
+<button id="Anywhere_button_iframe" class="anywhere-book-now-button" style="background-color: #000; color: #fff; border: none; padding: 12px 18px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; position: fixed; right: 0; top: 25%; z-index: 9999; transform: translate(30%, 0) rotate(-90deg);" data-booking-url="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" data-new-tab="false">Book now</button>
+
+<!-- GALLERY -->
+<section>
+  <div class="section-label">In the Field</div>
+  <h2>The Work <em>Speaks for Itself</em></h2>
+  <p class="section-intro">Behind cameras, on set, in the room where it happens. This is what over a decade of media production looks like.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 4px;">
+    <div style="aspect-ratio: 4/3; overflow: hidden;">
+      <img src="img1.jpg" alt="Blackmagic camera monitor on set at a church event" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+    <div style="aspect-ratio: 4/3; overflow: hidden;">
+      <img src="img2.jpg" alt="Panasonic camera with Rode VideoMic set up for a recording session" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+    <div style="aspect-ratio: 4/3; overflow: hidden;">
+      <img src="img3.jpg" alt="Full outdoor live production setup with Yamaha mixer and Panasonic camera" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+    <div style="aspect-ratio: 4/3; overflow: hidden;">
+      <img src="img4.jpg" alt="Live stream production setup with Dell monitor and Yamaha mixer" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+    <div style="aspect-ratio: 4/3; overflow: hidden;">
+      <img src="img5.jpg" alt="Camera and studio lighting setup for a live recording session" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 40px 0 8px;">
+    <a href="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" style="display:inline-block; padding: 16px 40px; background: var(--teal); color: var(--black); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; font-family: 'DM Sans', sans-serif; text-decoration: none;">Book Your Session — $200 →</a>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<div class="closing">
+  <div>
+    <div class="closing-title">Ready to get the support<br>your message deserves?</div>
+    <p class="closing-sub">Book your session, fill out the intake form, and show up. Everything else gets handled together. Your action plan will be waiting in your inbox within 24 hours of your call.</p>
+  </div>
+  <div class="closing-details">
+    <div class="closing-detail"><strong>$200</strong> · One session</div>
+    <div class="closing-detail"><strong>75 minutes</strong> · Virtual · Google Meet</div>
+    <div class="closing-detail"><strong>Booking:</strong> Setmore</div>
+    <div class="closing-detail"><strong>Payment:</strong> Stripe</div>
+    <div class="closing-detail"><strong>Action plan</strong> emailed within 24 hours</div>
+    <div class="closing-detail">shestreamsmedia@gmail.com</div>
+    <a href="https://shestreams.setmore.com/book?step=time-slot&products=f8f7e7bc-a731-4d80-a642-baf16029e659&type=service&staff=92ea8aa4-8487-43f2-aedd-523ecef385b5&staffSelected=true" class="closing-cta">Book Now →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="she-logo" style="opacity:0.2;"><span cla
